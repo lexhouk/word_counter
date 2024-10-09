@@ -3,6 +3,6 @@ description: Provides word counter to the body of the article.
 
 type: module
 core: 8.x
-core_version_requirement: ^8. || ^9 || ^10 || ^11
+core_version_requirement: ^8 || ^9 || ^10 || ^11
 
 configure: word_counter.settings

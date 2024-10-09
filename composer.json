@@ -1,0 +1,21 @@
+{
+    "name": "lexhouk/word_counter",
+    "description": "Provides word counter to the body of the article.",
+    "type": "drupal-module",
+    "license": "GPL-2.0-or-later",
+    "authors": [
+        {
+            "name": "Oleksandr Horbatiuk (lexhouk)",
+            "homepage": "https://www.drupal.org/u/lexhouk",
+            "role": "Maintainer"
+        }
+    ],
+    "homepage": "https://github.com/lexhouk/word_counter",
+    "support": {
+        "issues": "https://github.com/lexhouk/word_counter/issues",
+        "source": "https://github.com/lexhouk/word_counter.git"
+    },
+    "require": {
+        "drupal/core": "^8 || ^9 || ^10 || ^11"
+    }
+}

@@ -9,7 +9,7 @@ field_name: field_word_counter
 entity_type: node
 bundle: article
 label: 'Words amount'
-description: ''
+description: 'Stores the number of words in the Body field of the same node.'
 required: false
 translatable: true
 default_value:

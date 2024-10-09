@@ -11,6 +11,12 @@
 The Word Counter provides a statistical tool for determining the number of words
 in the body of an article.
 
+For a full description of the module, visit the
+[project page](https://github.com/lexhouk/word_counter).
+
+Submit bug reports and feature suggestions, or track changes in the
+[issue queue](https://github.com/lexhouk/word_counter/issues).
+
 
 ## Table of contents
 
