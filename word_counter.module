@@ -7,6 +7,19 @@
 
 use Drupal\Core\Entity\Display\EntityViewDisplayInterface;
 use Drupal\Core\Entity\EntityInterface;
+use Drupal\Core\Routing\RouteMatchInterface;
+
+/**
+ * Implements hook_help().
+ */
+function word_counter_help($route_name, RouteMatchInterface $route_match) {
+  if ($route_name !== 'help.page.word_counter') {
+    return '';
+  }
+
+  return '<h3>' . t('About') . '</h3>' .
+    '<p>' . t('Provides word counter to the body of the article.') . '</p>';
+}
 
 /**
  * Implements hook_entity_view_display_alter().
@@ -24,6 +37,8 @@ function word_counter_entity_view_display_alter(
         'prefix_suffix' => FALSE,
       ],
       'third_party_settings' => [],
+      // Placing the counter directly in front of the field that contains the
+      // text in which the words are searched.
       'weight' => ($display->getComponent('body')['weight'] ?? 0) - 1,
       'region' => 'content',
     ]);
@@ -38,14 +53,22 @@ function word_counter_node_presave(EntityInterface $entity) {
     $entity->bundle() === 'article' &&
     (
       $entity->isNew() ||
+      // For an existing node, the number of words is recalculated only if the
+      // text that was before and the text that is now differ.
       $entity->body->value !== $entity->original->body->value
     )
   ) {
+    // First, all HTML tags are removed, and then - spaces at the beginning and
+    // end of the text.
     $value = trim(strip_tags($entity->body->value));
 
     if (!empty($value)) {
       preg_match_all(
+        // Search in the text for sequences of letters (in any language), among
+        // which there may be hyphens.
         '/\p{L}+(?:-\p{L}+)*/u',
+        // Converting special characters, such as the copyright symbol, to plain
+        //text before performing a word search.
         html_entity_decode($value),
         $matches,
       );
