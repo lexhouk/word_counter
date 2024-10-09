@@ -18,7 +18,8 @@ function word_counter_help($route_name, RouteMatchInterface $route_match) {
   }
 
   return '<h3>' . t('About') . '</h3>' .
-    '<p>' . t('Provides word counter to the body of the article.') . '</p>';
+    '<p>' . t('As you can understand from the module\'s name, this functionality is created to analyze the text in the "Body" field from the nodes that belong to the "Article" content type. A word is any sequence of letters (the language of the text does not matter), which is separated from the rest of the content by spaces or punctuation marks. In addition to letters, a word can include numbers and hyphens, however, if the sequence consists of only the last two types of symbols, then this sequence is not considered a word.') . '</p>' .
+    '<p>' . t('The calculation process is performed automatically when a node is created or edited. It should be noted that this functionality must be enabled on the settings page (if it was previously disabled), however, after allowing the module to, its functionality will be enabled by default.') . '</p>';
 }
 
 /**
