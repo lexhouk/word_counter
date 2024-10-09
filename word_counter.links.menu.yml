@@ -1,0 +1,5 @@
+word_counter.settings:
+  title: 'Word Counter'
+  description: 'Specify whether the word count feature should be enabled or disabled.'
+  parent: system.admin_config_content
+  route_name: word_counter.settings

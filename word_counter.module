@@ -33,19 +33,24 @@ function word_counter_entity_view_display_alter(
     $context['bundle'] === 'article' &&
     ($component = $display->getComponent('body')) !== NULL
   ) {
-    $display->setComponent('field_word_counter', [
-      'type' => 'number_integer',
-      'label' => 'inline',
-      'settings' => [
-        'thousand_separator' => '	',
-        'prefix_suffix' => FALSE,
-      ],
-      'third_party_settings' => [],
-      // Placing the counter directly in front of the field that contains the
-      // text in which the words are searched.
-      'weight' => ($component['weight'] ?? 0) - 1,
-      'region' => 'content',
-    ]);
+    if (\Drupal::config('word_counter.settings')->get('status')) {
+      $display->setComponent('field_word_counter', [
+        'type' => 'number_integer',
+        'label' => 'inline',
+        'settings' => [
+          'thousand_separator' => '	',
+          'prefix_suffix' => FALSE,
+        ],
+        'third_party_settings' => [],
+        // Placing the counter directly in front of the field that contains the
+        // text in which the words are searched.
+        'weight' => ($component['weight'] ?? 0) - 1,
+        'region' => 'content',
+      ]);
+    }
+    else {
+      $display->removeComponent('field_word_counter');
+    }
   }
 }
 
@@ -56,6 +61,7 @@ function word_counter_node_presave(EntityInterface $entity) {
   if (
     $entity->bundle() === 'article' &&
     $entity->hasField('body') &&
+    \Drupal::config('word_counter.settings')->get('status') &&
     (
       $entity->isNew() ||
       // For an existing node, the number of words is recalculated only if the
