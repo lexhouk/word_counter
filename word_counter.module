@@ -28,7 +28,11 @@ function word_counter_entity_view_display_alter(
   EntityViewDisplayInterface $display,
   array $context
 ) {
-  if ($context['entity_type'] === 'node' && $context['bundle'] === 'article') {
+  if (
+    $context['entity_type'] === 'node' &&
+    $context['bundle'] === 'article' &&
+    ($component = $display->getComponent('body')) !== NULL
+  ) {
     $display->setComponent('field_word_counter', [
       'type' => 'number_integer',
       'label' => 'inline',
@@ -39,7 +43,7 @@ function word_counter_entity_view_display_alter(
       'third_party_settings' => [],
       // Placing the counter directly in front of the field that contains the
       // text in which the words are searched.
-      'weight' => ($display->getComponent('body')['weight'] ?? 0) - 1,
+      'weight' => ($component['weight'] ?? 0) - 1,
       'region' => 'content',
     ]);
   }
@@ -51,6 +55,7 @@ function word_counter_entity_view_display_alter(
 function word_counter_node_presave(EntityInterface $entity) {
   if (
     $entity->bundle() === 'article' &&
+    $entity->hasField('body') &&
     (
       $entity->isNew() ||
       // For an existing node, the number of words is recalculated only if the
