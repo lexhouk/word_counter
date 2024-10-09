@@ -5,7 +5,30 @@
  * Provides word counter to the body of the article.
  */
 
+use Drupal\Core\Entity\Display\EntityViewDisplayInterface;
 use Drupal\Core\Entity\EntityInterface;
+
+/**
+ * Implements hook_entity_view_display_alter().
+ */
+function word_counter_entity_view_display_alter(
+  EntityViewDisplayInterface $display,
+  array $context
+) {
+  if ($context['entity_type'] === 'node' && $context['bundle'] === 'article') {
+    $display->setComponent('field_word_counter', [
+      'type' => 'number_integer',
+      'label' => 'inline',
+      'settings' => [
+        'thousand_separator' => '	',
+        'prefix_suffix' => FALSE,
+      ],
+      'third_party_settings' => [],
+      'weight' => ($display->getComponent('body')['weight'] ?? 0) - 1,
+      'region' => 'content',
+    ]);
+  }
+}
 
 /**
  * Implements hook_ENTITY_TYPE_presave().
@@ -20,16 +43,17 @@ function word_counter_node_presave(EntityInterface $entity) {
   ) {
     $value = trim(strip_tags($entity->body->value));
 
-    if (empty($value)) {
-      $entity->word_counter->value = 0;
+    if (!empty($value)) {
+      preg_match_all(
+        '/\p{L}+(?:-\p{L}+)*/u',
+        html_entity_decode($value),
+        $matches,
+      );
+
+      $entity->field_word_counter->value = count($matches[0]);
     }
-
-    preg_match_all(
-      '/\p{L}+(?:-\p{L}+)*/u',
-      html_entity_decode($value),
-      $matches,
-    );
-
-    $entity->word_counter->value = count($matches[0]);
+    else {
+      $entity->field_word_counter->value = 0;
+    }
   }
 }
