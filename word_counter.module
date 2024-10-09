@@ -1,0 +1,35 @@
+<?php
+
+/**
+ * @file
+ * Provides word counter to the body of the article.
+ */
+
+use Drupal\Core\Entity\EntityInterface;
+
+/**
+ * Implements hook_ENTITY_TYPE_presave().
+ */
+function word_counter_node_presave(EntityInterface $entity) {
+  if (
+    $entity->bundle() === 'article' &&
+    (
+      $entity->isNew() ||
+      $entity->body->value !== $entity->original->body->value
+    )
+  ) {
+    $value = trim(strip_tags($entity->body->value));
+
+    if (empty($value)) {
+      $entity->word_counter->value = 0;
+    }
+
+    preg_match_all(
+      '/\p{L}+(?:-\p{L}+)*/u',
+      html_entity_decode($value),
+      $matches,
+    );
+
+    $entity->word_counter->value = count($matches[0]);
+  }
+}
